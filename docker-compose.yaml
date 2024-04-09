@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  inference-server:
+    build:
+      dockerfile: docker/Dockerfile.inference
+      context: .
+    image: live-translate-inference-server
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+    volumes:
+      - ./inference/models/:/models
+    profiles: ["inference", "ci"]
