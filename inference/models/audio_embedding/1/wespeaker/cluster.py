@@ -121,16 +121,10 @@ class AgglomerativeClustering:
             return clusters
 
         large_centroids = np.vstack(
-            [
-                np.mean(embeddings[clusters == large_k], axis=0)
-                for large_k in large_clusters
-            ]
+            [np.mean(embeddings[clusters == large_k], axis=0) for large_k in large_clusters]
         )
         small_centroids = np.vstack(
-            [
-                np.mean(embeddings[clusters == small_k], axis=0)
-                for small_k in small_clusters
-            ]
+            [np.mean(embeddings[clusters == small_k], axis=0) for small_k in small_clusters]
         )
         centroids_cdist = cdist(
             large_centroids,

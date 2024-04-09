@@ -157,9 +157,7 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, m_channels * 4, num_blocks[2], stride=2)
         self.layer4 = self._make_layer(block, m_channels * 8, num_blocks[3], stride=2)
 
-        self.pool = POOLING_LAYERS[pooling_func](
-            in_dim=self.stats_dim * block.expansion
-        )
+        self.pool = POOLING_LAYERS[pooling_func](in_dim=self.stats_dim * block.expansion)
         self.pool_out_dim = self.pool.get_out_dim()
         self.seg_1 = nn.Linear(self.pool_out_dim, embed_dim)
         if self.two_emb_layer:
