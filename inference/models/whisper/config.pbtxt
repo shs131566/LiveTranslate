@@ -1,0 +1,44 @@
+name: "whisper"
+backend: "python"
+max_batch_size: 0
+
+input [
+  {
+    name: "AUDIO"
+    data_type: TYPE_FP32
+    dims: [-1]
+  },
+  {
+    name: "SAMPLE_RATE"
+    data_type: TYPE_INT32
+    dims: [1]
+  },
+  {
+    name: "LANGUAGE"
+    data_type: TYPE_STRING
+    dims: [1]
+  },
+  {
+    name: "INFERENCE_TYPE"
+    data_type: TYPE_STRING
+    dims: [1]
+  }
+]
+
+output [
+  {
+    name: "TRANSCRIPT"
+    data_type: TYPE_STRING
+    dims: [-1]
+  },
+  {
+    name: "REPETITION"
+    data_type: TYPE_BOOL
+    dims: [1]
+  },
+  {
+    name: "LANGUAGE"
+    data_type: TYPE_STRING
+    dims: [1]
+  }
+]

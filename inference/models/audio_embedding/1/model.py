@@ -76,7 +76,9 @@ class TritonPythonModel:
 
             except Exception as e:
                 logger.log(f"Error: {e}", logger.ERROR)
-                inference_response = pb_utils.InferenceResponse(error=pb_utils.TritonError.INTERNAL)
+                inference_response = pb_utils.InferenceResponse(
+                    f"Triton internal error {e}", error=pb_utils.TritonError.INTERNAL
+                )
 
             responses.append(inference_response)
 

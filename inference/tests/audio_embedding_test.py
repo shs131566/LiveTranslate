@@ -4,7 +4,7 @@ import tritonclient.http as httpclient
 triton_client = httpclient.InferenceServerClient(url="localhost:8000")
 
 
-model_metadata = triton_client.get_model_metadata("audio_embedding", "1")
+model_metadata = triton_client.get_model_metadata("audio_embedding")
 
 # Generate random audio data
 audio = np.random.randn(16000 * 5).astype(np.float32)

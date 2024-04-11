@@ -9,6 +9,7 @@ services:
     runtime: nvidia
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
+      - LOG_VERBOSE=1
     ports:
       - "8000:8000"
       - "8001:8001"
