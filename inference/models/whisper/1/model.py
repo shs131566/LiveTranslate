@@ -42,6 +42,8 @@ class TritonPythonModel:
 
         responses: List[pb_utils.InferenceResponse] = []
         for request in requests:
+            if request.is_cancelled():
+                continue
             try:
                 # Get input tensors
                 audio: pb_utils.Tensor = pb_utils.get_input_tensor_by_name(request, "AUDIO")
@@ -85,19 +87,20 @@ class TritonPythonModel:
                 logger.log(f"Detected language: {language}", logger.INFO)
                 options = whisper.DecodingOptions(language=language, without_timestamps=True)
 
+                # When inference type is transcribe, use whisper transcribe method which includes sentnece segmentation and timestamp
                 if inference_type == "transcribe":
-                    transcribe_result = self.model.transcribe(
-                        audio, language=language, compression_ratio_threshold=1.0
-                    )
+                    transcribe_result = self.model.transcribe(audio, language=language)
 
                     transcripts = []
                     for segment in transcribe_result["segments"]:
                         transcripts.append(
-                            {
-                                "text": segment["text"],
-                                "start": segment["start"],
-                                "end": segment["end"],
-                            }
+                            json.dumps(
+                                {
+                                    "text": segment["text"],
+                                    "start": segment["start"],
+                                    "end": segment["end"],
+                                }
+                            )
                         )
 
                     repetition = False
@@ -105,7 +108,7 @@ class TritonPythonModel:
                     logger.log(
                         f"Transcript: {transcripts}, repetition: {repetition}", logger.VERBOSE
                     )
-
+                # When inference type is streaming, use whisper decode method which only returns the transcript and it works only under 30 seconds
                 elif inference_type == "streaming":
                     # Pad or trim audio to 30 seconds
                     audio_tensor = whisper.pad_or_trim(audio).to(self.device)

@@ -6,7 +6,7 @@ import tritonclient.http as httpclient
 
 SAMPLE_WAV = sys.argv[1]
 triton_client = httpclient.InferenceServerClient(
-    url="localhost:8000", network_timeout=600, connection_timeout=600
+    url="localhost:8000", network_timeout=1200, connection_timeout=1200
 )
 
 model_metadata = triton_client.get_model_metadata("whisper", "1")
@@ -23,23 +23,19 @@ sample_rate_input.set_data_from_numpy(np.array([sr], dtype=np.int32))
 language_input.set_data_from_numpy(np.array([b"en"]))
 inference_type_input.set_data_from_numpy(np.array([b"transcribe"]))
 
-import time
 
-start = time.time()
-
-try:
-    result = triton_client.infer(
-        model_name="whisper",
-        model_version="1",
-        inputs=[audio_input, sample_rate_input, language_input, inference_type_input],
-    )
-except Exception as e:
-    print(e)
-    print(f"elapsed time: {time.time() - start}")
+result = triton_client.infer(
+    model_name="whisper",
+    model_version="1",
+    inputs=[audio_input, sample_rate_input, language_input, inference_type_input],
+)
 
 transcript_result = result.as_numpy("TRANSCRIPT")
-print(transcript_result)
-repetion_result = result.as_numpy("REPETITION")
+for transcript in transcript_result:
+    print(transcript.decode("utf-8"))
+
+repetion_result = result.as_numpy("REPETITION")[0]
 print(repetion_result)
-language_result = result.as_numpy("LANGUAGE")
+
+language_result = result.as_numpy("LANGUAGE")[0].decode("utf-8")
 print(language_result)
