@@ -48,7 +48,7 @@ class TritonPythonModel:
                 # Get input tensors
                 audio: pb_utils.Tensor = pb_utils.get_input_tensor_by_name(request, "AUDIO")
                 audio: torch.Tensor = dlpack.from_dlpack(audio.to_dlpack())
-                logger.log(f"Audio: {audio}", logger.WARNING)
+
                 sample_rate = pb_utils.get_input_tensor_by_name(request, "SAMPLE_RATE").as_numpy()
                 language: str = (
                     pb_utils.get_input_tensor_by_name(request, "LANGUAGE")
@@ -89,7 +89,9 @@ class TritonPythonModel:
 
                 # When inference type is transcribe, use whisper transcribe method which includes sentnece segmentation and timestamp
                 if inference_type == "transcribe":
-                    transcribe_result = self.model.transcribe(audio, language=language)
+                    transcribe_result = self.model.transcribe(
+                        audio, temperature=(0.0), language=language
+                    )
 
                     transcripts = []
                     for segment in transcribe_result["segments"]:
