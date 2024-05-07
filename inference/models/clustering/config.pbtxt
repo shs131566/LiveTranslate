@@ -1,0 +1,19 @@
+name: "clustering"
+backend: "python"
+max_batch_size: 0
+
+input [
+  {
+    name: "EMBEDDINGS"
+    data_type: TYPE_FP32
+    dims: [ -1, -1]
+  }
+]
+
+output [
+  {
+    name: "SPEAKERS"
+    data_type: TYPE_INT32
+    dims: [ -1 ]
+  }
+]

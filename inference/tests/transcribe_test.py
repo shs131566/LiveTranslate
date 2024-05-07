@@ -24,3 +24,7 @@ result = triton_client.infer(
     model_version="1",
     inputs=[audio_input, sample_rate_input, language_input],
 )
+
+transcript_result = result.as_numpy("TRANSCRIPT")
+for transcript in transcript_result:
+    print(transcript.decode("utf-8"))
